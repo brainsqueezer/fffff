@@ -99,7 +99,7 @@ function do_submit1() {
 
 	if ($globals['min_karma_for_links'] > 0 && $current_user->user_karma < $globals['min_karma_for_links'] ) {
 		echo '<p class="error"><strong>'._('no tienes el mínimo de karma para enviar una nueva historia').'</strong></p> ';
-		echo '<br style="clear: both;" />' . "\n";
+// 		echo '<br style="clear: both;" />' . "\n";
 		echo '</div>'. "\n";
 		return;
 	}

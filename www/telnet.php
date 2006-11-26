@@ -154,6 +154,5 @@ for ($i=0; $i<$max_items;$i++) {
 }
 
 echo '</div>';
-//echo "</div>\n"; // air-with-footer
 echo "</body></html>\n";
 ?>

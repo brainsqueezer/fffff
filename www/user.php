@@ -67,7 +67,7 @@ if (strlen($user->names) > 0) {
 else {
 	$display_name = $user->username;
 }
-echo '<h2>'.$display_name.'</h2>'."\n";
+echo '<div class="topheading"><h2>'.$display_name.'</h2></div>'."\n";
 
 $url_login = urlencode($login);
 switch ($view) {
@@ -122,7 +122,7 @@ function do_profile() {
 		echo ' (<a href="'.$globals['base_url'].'profile.php?login='.urlencode($login).'">'._('modificar').'</a>)';
 	}
 	echo '</legend>';
-	echo '<img class="sub-nav-img" src="'.get_avatar_url($user->id, $user->avatar, 80).'" width="80" height="80" alt="'.$user->username.'" title="avatar" />';
+	echo '<img class="gravatar-sub" src="'.get_avatar_url($user->id, $user->avatar, 80).'" width="80" height="80" alt="'.$user->username.'" title="avatar" />';
 
 	echo '<dl>';	
 	if(!empty($user->username)) {
@@ -333,17 +333,16 @@ function do_voters () {
 function do_user_tabs($option, $user) {
 
 		$active = array();
-		$active[$option] = 'class="active"';
+		$active[$option] = 'class="tabsub-this"';
 
-		echo '<div class="sub-nav">'."\n";
-		echo '<ul>'."\n";
+		echo '<ul class="tabsub-user">'."\n";
 		echo '<li '.$active[1].'><a href="'.get_user_uri($user).'">'._('perfil'). '</a></li>';
 		echo '<li '.$active[2].'><a href="'.get_user_uri($user, 'history').'">'._('enviadas'). '</a></li>';
 		echo '<li '.$active[3].'><a href="'.get_user_uri($user, 'commented').'">'._('comentarios'). '</a></li>';
 		echo '<li '.$active[4].'><a href="'.get_user_uri($user, 'shaken').'">'._('votadas'). '</a></li>';
 		echo '<li '.$active[5].'><a href="'.get_user_uri($user, 'preferred').'">'._('autores preferidos'). '</a></li>';
 		echo '<li '.$active[6].'><a href="'.get_user_uri($user, 'voters').'">'._('votado por'). '</a></li>';
-		echo '</ul><br /></div>';
+		echo '</ul>';
 
 }
 

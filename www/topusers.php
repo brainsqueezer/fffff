@@ -63,9 +63,9 @@ switch ($sortby) {
 
 do_header(_('usuarios'));
 do_navbar('<a href="'.$globals['base_url'].'topusers.php">'._('usuarios') . '</a> &#187; ' . _('estadísticas'));
-echo '<h2>'._('estadísticas').'</h2>';
+echo '<div class="topheading"><h2>'._('estadísticas de usuarios').'</h2></div>';
 
-echo '<p>&nbsp;</p> <table><tr>';
+echo '<table><tr>';
 
 // Print headers
 for($i=0; $i<count($items); $i++) {

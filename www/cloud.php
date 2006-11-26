@@ -40,10 +40,9 @@ $coef = ($max_pts - $min_pts)/($max-1);
 do_header(_('nube de etiquetas'));
 do_navbar(_('etiquetas'));
 echo '<div id="contents">';
-echo '<h2>+ '.$words_limit.'</h2>';
-
-
-echo '<div style="margin: 20px 0 20px 0; line-height: '.$line_height.'pt; margin-left: 100px;">';
+do_tabs("main","");
+echo '<div class="topheading"><h2>+ '.$words_limit.'</h2></div>';
+echo '<div style="margin: 0px 0 20px 0; line-height: '.$line_height.'pt; margin-left: 25px;">';
 $res = $db->get_results("select tag_words, count(*) as count $from_where order by count desc limit $words_limit");
 if ($res) {
 	foreach ($res as $item) {
@@ -67,25 +66,29 @@ function do_sidebar_top() {
 	global $db, $dblang, $range_values, $range_names;
 
 	echo '<div id="sidebar">'."\n";
-	echo '<ul class="main-menu">'."\n";
+	echo '<ul class="mnu-main">'."\n";
+	do_mnu_faq('cloud');
+	do_mnu_submit();
+	do_mnu_sneak();
+
 	echo '<li>'."\n";
-	echo '<div class="column-select-us">'."\n";
+	echo '<div class="column-one-list-short">'."\n";
 	echo '<ul>'."\n";
 
 	if(!($current_range = check_integer('range')) || $current_range < 1 || $current_range >= count($range_values)) $current_range = 0;
-	for($i=0; $i<count($range_values); $i++) {	
+	for($i=0; $i<count($range_values); $i++) {
 		if($i == $current_range)  {
-			echo '<li class="thiscat">' .$range_names[$i]. '</li>'."\n";
+			$classornotclass = ' class="thiscat"';
 		} else {
-			echo '<li><a href="cloud.php?range='.$i.'">' .$range_names[$i]. '</a></li>'."\n";
+			$classornotclass = "";
 		}
-		
+		echo '<li '.$classornotclass.'><a href="cloud.php?range='.$i.'">' .$range_names[$i]. '</a></li>'."\n";
 	}
 	echo '</ul>'."\n";
 	echo '</div>'."\n";
 	echo '</li>'."\n";
 
-	do_standard_links();
+	do_mnu_meneria();
 	echo '</ul>';
 	echo '</div>';
 

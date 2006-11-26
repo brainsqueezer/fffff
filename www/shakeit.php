@@ -29,31 +29,44 @@ if($search) {
 	do_header(_('noticias pendientes'));
 	do_navbar(_('noticias en la cola'));
 	echo '<div id="contents">'."\n";
-	echo '<h2>'._('noticias pendientes').'</h2>'."\n";
+	do_tabs("main","shakeit");
 	$order_by = " ORDER BY link_date DESC ";
 }
 
-// tabs
+// dropdown
 
-echo '<div style="margin: 0 0 0 100px;">'."\n";
-echo '<div class="sub-nav">'."\n";
-// echo '<div class="shakeit-nav">'."\n";
-echo '<ul>'."\n";
+echo '<div class="dropdown-01"><em>';
+$ul_pintat = 0;
 
 $view = clean_input_string($_REQUEST['view']);
 $cat = check_integer('category');
 
 switch ($view) {
 	case 'discarded':
+
+		// benjami
+		echo _('descartadas').'</em>'."\n";
+		if ($ul_pintat == 0) {
+			echo '<ul>'."\n";
+			$ul_pintat = 1;
+		}
+
 		// Show only discarded in four days
 		$from_where = "FROM links WHERE link_date > date_sub(now(), interval 4 day) and link_status='discard' and (link_votes >0 || link_author = $current_user->user_id)";
 		echo '<li><a href="shakeit.php">'._('todas'). '</a></li>'."\n";
 		if ($current_user->user_id > 0)
 			echo '<li><a href="shakeit.php?view=recommended">'._('recomendadas'). '</a></li>'."\n";
-		echo '<li class="active"><a href="shakeit.php?view=discarded">'._('descartadas').'</a></li>'."\n";
-		echo '</ul><br /></div>'."\n";
+		echo '</ul></div>'."\n";
 	break;
 	case 'recommended':
+
+		// benjami
+		echo _('recomendadas').'</em>'."\n";
+		if ($ul_pintat == 0) {
+			echo '<ul>'."\n";
+			$ul_pintat = 1;
+		}
+
 		if ($current_user->user_id > 0 && !$search) {
 			$threshold = $db->get_var("select friend_value from friends where friend_type='affiliate' and friend_from = $current_user->user_id and friend_to=0");
 			if(!$threshold) $threshold = 0;
@@ -63,9 +76,8 @@ switch ($view) {
 			$from_where = "FROM links, friends WHERE link_date > date_sub(now(), interval 4 day) and link_status='queued' and friend_type='affiliate' and friend_from = $current_user->user_id and friend_to=link_author and friend_value > $threshold";
 			$order_by = " ORDER BY link_date DESC ";	
 			echo '<li><a href="shakeit.php">'._('todas'). '</a></li>'."\n";
-			echo '<li class="active"><a href="shakeit.php?view=recommended">'._('recomendadas').'</a></li>'."\n";
 			echo '<li><a href="shakeit.php?view=discarded">'._('descartadas'). '</a></li>'."\n";
-			echo '</ul><br /></div>'."\n";
+			echo '</ul></div>'."\n";
 			break;
 		}
 	case 'all':
@@ -75,15 +87,22 @@ switch ($view) {
 		else 
 			// Show last in seven days
 			$from_where = "FROM links WHERE link_date > date_sub(now(), interval 7 day) and link_status='queued'";
-		echo '<li class="active"><a href="shakeit.php">'._('todas').'</a></li>'."\n";
+
+			// benjami
+			echo _('todas').'</em>'."\n";
+			if ($ul_pintat == 0) {
+				echo '<ul>'."\n";
+				$ul_pintat = 1;
+			}
+
 		if ($current_user->user_id > 0)
 			echo '<li><a href="shakeit.php?view=recommended">'._('recomendadas'). '</a></li>'."\n";
 		echo '<li><a href="shakeit.php?view=discarded">'._('descartadas'). '</a></li>'."\n";
-		echo '</ul><br /></div>'."\n";
+		echo '</ul></div>'."\n";
 	break;
 }
 
-echo '</div>';  // Left margin
+// fora en posar dropdown echo '</div>';  // Left margin
 // end of tabs
 
 if($cat) {
@@ -110,7 +129,11 @@ function do_sidebar_shake() {
 	global $db, $dblang, $globals;
 
 	echo '<div id="sidebar">';
-	echo '<ul class="main-menu">';
+	echo '<ul class="mnu-main">';
+
+	do_mnu_faq('shakeit');
+	do_mnu_sneak();
+	do_mnu_submit();
 
 /******* Disabled temporarely
 	echo '<li>' . "\n";
@@ -126,7 +149,7 @@ function do_sidebar_shake() {
 
 	// Categories box
 
-	do_categories ('shakeit', check_integer('category'));
+	do_mnu_categories ('shakeit', check_integer('category'));
 
 	/*** This search is never used 
 	*******************************
@@ -143,8 +166,9 @@ function do_sidebar_shake() {
 	echo '</li>'. "\n";
 	******/
 	//do_banner_right_a(); // right side banner
-	echo '<li><div class="mnu-bugs"><a href="http://meneame.wikispaces.com/Bugs">'._("reportar un bug").'</a></div></li>' . "\n";
-	do_rss_box();
+	do_mnu_tools();
+	do_mnu_bugs();
+	do_mnu_rss();
 	echo '</ul>'. "\n";
 	echo '</div>'. "\n";
 

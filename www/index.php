@@ -55,7 +55,7 @@ if($search)  {
 if($search) {
 	do_header(_('búsqueda de'). '"'.$search_txt.'"');
 	do_navbar(_('búsqueda'));
-	echo '<div id="contents">'; // benjami: repetit, no m'agrada, arreglar depres
+	echo '<div id="contents">'; // benjami: repetit, no m'agrada, arreglar despres
 	echo '<h2>'._('resultados de la búsqueda'). ' "'.$search_txt.'" </h2>';
 	$from_where .= $search;
 	if ($_REQUEST['tag'] == 'true' || $_REQUEST['date']  == 'true' ) {
@@ -66,8 +66,8 @@ if($search) {
 } else {
 	do_header(_('últimas publicadas'));
 	do_navbar('');
-	echo '<div id="contents">'; // benjami: repetit, no m'agrada, arreglar despres
-	echo '<h2>'._('últimas noticias').'</h2>';
+	echo '<div id="contents">'."\n"; // benjami: repetit, no m'agrada, arreglar despres
+	do_tabs("main","published");
 	$order_by = " ORDER BY link_published_date DESC ";
 }
 

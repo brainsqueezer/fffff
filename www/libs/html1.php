@@ -17,6 +17,70 @@ if (!empty($globals['lounge'])) {
 
 header("Content-type: text/html; charset=utf-8");
 
+function do_tabs($tab_name, $tab_selected) {
+
+if ($tab_name == "main" ) {
+
+	global $globals;
+
+	// posar-hi title a tots els a; passar-ho tot per _()
+	// smooth end echo '<div class="tabmain-right-end">';
+	echo '<ul class="tabmain">' . "\n";
+	$reload_text = _("recargar");
+	$reload_icon = '<img src="'.$globals['base_url'].'img/common/reload-tab-01.png" alt="'.$reload_text.'" />';
+
+	// url with parameters?
+	if (!empty($_SERVER['QUERY_STRING']))
+		$query = "?".$_SERVER['QUERY_STRING'];
+	else $query = "";
+
+
+	// published tab
+	$cl = "";
+	if ($tab_selected == "published") {
+		$cl = ' class="tabmain-this"';
+		$ln1 = "";
+		$ln2 = "";
+		$ln3 = '&nbsp;&nbsp;<a href="'.$globals['base_url'].$query.'" title="'.$reload_text.'">'.$reload_icon.'</a>';
+	}
+	else {
+		$ln1 = '<a href="'.$globals['base_url'].'">';
+		$ln2 = '</a>';
+		$ln3 = '';
+	}
+	echo '<li'.$cl.'>'.$ln1._('portada').$ln2.$ln3.'</li>' . "\n";
+
+
+	// shakeit tab
+	$cl = "";
+	if ($tab_selected == "shakeit") {
+		$cl = ' class="tabmain-this"';
+		$ln1 = "";
+		$ln2 = "";
+		$ln3 = '&nbsp;&nbsp;<a href="'.$globals['base_url'].'shakeit.php'.$query.'" title="'.$reload_text.'">'.$reload_icon.'</a>';
+	}
+	else {
+		$ln1 = '<a href="'.$globals['base_url'].'shakeit.php">';
+		$ln2 = '</a>';
+		$ln3 = '';
+	}
+	echo '<li'.$cl.'>'.$ln1._('menear pendientes').$ln2.$ln3.'</li>' . "\n";
+
+	// story tab
+	$cl = "";
+	if ($tab_selected == "story") {
+		$cl = ' class="tabmain-this"';
+		$ln1 = "";
+		$ln2 = "";
+		$ln3 = '&nbsp;&nbsp;<a href="'.htmlspecialchars($_SERVER['PHP_SELF']).'" title="'.$reload_text.'">'.$reload_icon.'</a>';
+		echo '<li'.$cl.'>'.$ln1._('noticia').$ln2.$ln3.'</li>' . "\n";
+	}
+
+	echo '</ul>' . "\n";
+	// smooth end echo '</div>';
+	}
+}
+
 function do_navbar($where) {
 /*
 	global $globals;
@@ -38,7 +102,7 @@ function do_header($title, $id='home') {
 	echo '<meta name="generator" content="meneame" />' . "\n";
 	echo '<meta name="keywords" content="'.$globals['tags'].'" />' . "\n";
 	echo '<link rel="microsummary" type="application/x.microsummary+xml" href="'.$globals['base_url'].'microsummary.xml" />' . "\n";
-	echo '<style type="text/css" media="screen">@import "'.$globals['base_url'].'css/es/mnm16-7.css";</style>' . "\n";
+	echo '<style type="text/css" media="screen">@import "'.$globals['base_url'].'css/es/mnm17.css";</style>' . "\n";
 	echo '<link rel="alternate" type="application/rss+xml" title="'._('publicadas').'" href="http://'.get_server_name().$globals['base_url'].'rss2.php" />'."\n";
 	echo '<link rel="alternate" type="application/rss+xml" title="'._('pendientes').'" href="http://'.get_server_name().$globals['base_url'].'rss2.php?status=queued" />'."\n";
 	echo '<link rel="alternate" type="application/rss+xml" title="'._('todas').'" href="http://'.get_server_name().$globals['base_url'].'rss2.php?status=all" />'."\n";
@@ -95,7 +159,7 @@ function do_header($title, $id='home') {
 
 function do_footer($credits = true) {
 	if($credits) @do_credits();
-	echo "</div><!--#container closed-->\n";
+// 	echo "</div><!--#container closed-->\n";
 
 	// warn warn warn 
 	// dont do stats of password recovering pages
@@ -110,104 +174,267 @@ function do_sidebar() {
 	echo '<div id="sidebar">';
 	
 	if(!empty($globals['link_id'])) {
-		do_trackbacks();
-		echo '<ul class="main-menu">' . "\n";
+		$doing_story=true;
+		echo '<ul class="mnu-main">' . "\n";
+		do_mnu_faq('story');
+		do_mnu_trackbacks();
 	} else {
-		echo '<ul class="main-menu">' . "\n";
-		echo '<li>' . "\n";
-		echo '<div class="note-temp">' . "\n";
-		echo '<strong>' . _("menéame"). '</strong>' . "\n";
-		echo _("es un sistema de promoción de noticias...").' <a href="'.$globals['base_url'].'faq-'.$dblang.'.php">'. _("leer más") . '</a>.' . "\n";
-		echo '</div>' . "\n";
-		echo '</li>' . "\n";
+		$doing_story=false;
+		echo '<ul class="mnu-main">' . "\n";
+		do_mnu_faq('home');
 	}
 
-
-	// Menear box
-	echo '<li class="main-mnm"><a href="'.$globals['base_url'].'shakeit.php"  title="'._('votar las noticias en la cola de pendientes').'">'._("menear pendientes").'</a></li>' . "\n";
-	if ($globals['do_vote_queue']) {
-		echo '<li class="main-mnm-moretext"><a href="'.$globals['base_url'].'shakeit.php?category='.$globals['category_id'].'">'._("menear pendientes de la categoría").' <strong>'.$globals['category_name'].'</strong></a></li>' . "\n";
-	}
+		do_mnu_submit();
+		do_mnu_sneak();
 
 	if(empty($globals['link_id'])) {
-		// submit box
-		echo '<li class="main-submit"><a href="'.$globals['base_url'].'submit.php" title="'._('enviar una noticia o historia').'">'. _("enviar una historia") . '</a></li>' . "\n";
-		echo '<li class="main-sneak"><a href="'.$globals['base_url'].'sneak.php" title="'._('ver eventos en tiempo real').'">'._("fisgona").'</a></li>' . "\n";
-
-		do_categories('index', $_REQUEST['category']);
-//		do_tags_box();
-		do_standard_links();
-		//do_banner_right_a(); // right side banner
+		do_mnu_categories('index', $_REQUEST['category']);
 	}
-	echo '<li><div class="mnu-bugs"><a href="http://meneame.wikispaces.com/Bugs">'._("reportar un bug").'</a></div></li>' . "\n";
-	do_rss_box();
+	do_mnu_meneria();
+	do_mnu_menedising();
+	do_mnu_tools();
+	do_mnu_bugs();
+	do_mnu_rss();
 	echo '</ul></div><!--html1:do_sidebar-->' . "\n";
 }
 
-function do_standard_links () {
-		global $globals;
-	//	echo '<li><a href="/lastshaked.php">'._("últimos meneados").'</a></li>' . "\n";
-		echo '<li><div class="mnu-top"><a href="'.$globals['base_url'].'topcomments.php">'._("comentarios +").'</a></div></li>' . "\n";
-		echo '<li><div class="mnu-us"><a href="'.$globals['base_url'].'cloud.php">'._("etiquetas").'</a></div></li>' . "\n";
-		echo '<li><div class="mnu-us"><a href="'.$globals['base_url'].'topstories.php">'._("más meneadas").'</a></div></li>' . "\n";
-		echo '<li><div class="mnu-us"><a href="'.$globals['base_url'].'topcommented.php">'._("más comentadas").'</a></div></li>' . "\n";
-		echo '<li><div class="mnu-top"><a href="'.$globals['base_url'].'blogscloud.php">'._("blogs").'</a></div></li>' . "\n";
-		echo '<li><div class="mnu-top"><a href="'.$globals['base_url'].'topusers.php">'._("usuarios").'</a></div></li>' . "\n";
+// menu items
+
+function do_mnu_faq($whichpage) {
+	global $dblang;
+	echo '<li class="mnu-faq">' . "\n";
+	switch ($whichpage) {
+		case 'home':
+			echo '<strong>' . _("menéame"). '</strong>' . "\n";
+			echo _("es un sistema de promoción de noticias...").' <a href="'.$globals['base_url'].'faq-'.$dblang.'.php">'. _("leer más") . '</a>.' . "\n";
+			break;
+		case 'story':
+			echo '<strong>' . _("menéame"). '</strong>' . "\n";
+			echo _("te ofrece esta noticia...").' <a href="'.$globals['base_url'].'faq-'.$dblang.'.php">'. _("¿qué es menéame?") . '</a>' . "\n";
+			break;
+		case 'shakeit':
+			echo 'las noticias de esta p&aacute;gina con suficientes votos pasar&aacute;n a portada. para votar pulsa en <strong>men&eacute;alo</strong>.';
+			break;
+		case 'cloud':
+			echo 'las etiquetas <strong>más populares</strong> aparecen a la derecha <strong>con mayor tamaño</strong>';
+		case 'sitescloud':
+			echo 'los webs <strong>más populares</strong> aparecen a la derecha <strong>con mayor tamaño</strong>';
+			break;
+		case 'topstories':
+			echo 'selecciona un período y aparecerán las noticias <strong>más populares</strong> del momento';
+			break;
+		case 'topcomments':
+			echo 'estos son los comentarios más valorados durante las ultimas 24 horas';
+			break;
+	}
+	echo '</li>' . "\n";
+	
 }
 
-function do_rss_box() {
+function do_mnu_submit() {
+	global $globals;
+	echo '<li class="mnu-submit"><a href="'.$globals['base_url'].'submit.php">'._("enviar noticia").'</a></li>' . "\n";
+}
+
+function do_mnu_sneak() {
+	global $globals;
+	echo '<li class="mnu-sneak"><a href="'.$globals['base_url'].'sneak.php">'._("fisgona").'</a></li>' . "\n";
+}
+
+function do_mnu_bugs() {
+	echo '<li class="mnu-bugs"><a href="http://meneame.wikispaces.com/Bugs">'._("reportar errores").'</a></li>' . "\n";
+}
+
+function do_mnu_menedising() {
+	echo '<li class="mnu-menedising"><a href="http://meneame.wikispaces.com/menechandising">'._("menechandising").'</a></li>' . "\n";
+}
+
+function do_mnu_meneria () {
+		global $globals;
+		echo '<li>' . "\n";
+		echo '<ul class="mnu-meneria">' . "\n";
+		echo '<li><a href="'.$globals['base_url'].'cloud.php">'._("nube de etiquetas").'</a></li>' . "\n";
+		echo '<li><a href="'.$globals['base_url'].'topstories.php">'._("más meneadas").'</a></li>' . "\n";
+		echo '<li><a href="'.$globals['base_url'].'topusers.php">'._("usuarios").'</a></li>' . "\n";
+		echo '<li><a href="'.$globals['base_url'].'topcomments.php">'._("mejores comentarios").'</a></li>' . "\n";
+		echo '<li><a href="'.$globals['base_url'].'sitescloud.php">'._("webs").'</a></li>' . "\n";
+		echo '</ul>' . "\n";
+		echo '</li>' . "\n";
+}
+
+function do_mnu_tools () {
+		echo '<li>' . "\n";
+		echo '<ul class="mnu-tools">' . "\n";
+		echo '<li><a href="http://meneame.wikispaces.com/FAQ">'._("faq").'</a></li>' . "\n";
+		echo '<li><a href="http://meneame.wikispaces.com/Ayuda">'._("ayuda").'</a></li>' . "\n";
+		echo '<li><a href="http://meneame.wikispaces.com">'._("wiki").'</a></li>' . "\n";
+		echo '<li><a href="http://blog.meneame.net">'._("blog").'</a></li>' . "\n";
+		echo '</ul>' . "\n";
+		echo '</li>' . "\n";
+}
+
+function do_mnu_rss() {
 	global $globals, $current_user;
 
 	echo '<li>' . "\n"; // It was class="side-boxed"
-	echo '<ul class="rss-list">' . "\n";
-	echo '<li class="rss-retol">'._('suscripciones').'</li>' . "\n";
+	echo '<ul class="mnu-rss">' . "\n";
 
 	if(!empty($_REQUEST['search'])) {
 		$search =  htmlspecialchars($_REQUEST['search']);
 		echo '<li>';
 		echo '<a href="'.$globals['base_url'].'rss2.php?search='.urlencode($search).'" rel="rss">'._("búsqueda").': <strong>'. htmlspecialchars($_REQUEST['search'])."</strong></a>\n";
 		echo '</li>';
-
 	}
 
 	if(!empty($globals['category_name'])) {
 		echo '<li>';
-		echo '<a href="'.$globals['base_url'].'rss2.php?status=all&amp;category='.$globals['category_id'].'" rel="rss">'._("categoría").': <strong>'.$globals['category_name']."</strong></a>\n";
+		echo '<a href="'.$globals['base_url'].'rss2.php?status=all&amp;category='.$globals['category_id'].'" rel="rss">'._("rss categoría").': <strong>'.$globals['category_name']."</strong></a>\n";
 		echo '</li>';
 
 	}
 
 	echo '<li>';
-	echo '<a href="'.$globals['base_url'].'rss2.php" rel="rss">'._('publicadas').'</a>';
+	echo '<a href="'.$globals['base_url'].'rss2.php" rel="rss">'._('rss publicadas').'</a>';
 	echo '</li>' . "\n";
 	
 	echo '<li>';
-	echo '<a href="'.$globals['base_url'].'rss2.php?status=queued" rel="rss">'._('en cola').'</a>';
+	echo '<a href="'.$globals['base_url'].'rss2.php?status=queued" rel="rss">'._('rss en cola').'</a>';
 	echo '</li>' . "\n";
 
 	echo '<li>';
-	echo '<a href="'.$globals['base_url'].'rss2.php?status=all" rel="rss">'._('todas').'</a>';
+	echo '<a href="'.$globals['base_url'].'rss2.php?status=all" rel="rss">'._('rss todas').'</a>';
 	echo '</li>' . "\n";
 
 	if(!empty($globals['link_id'])) {
 		echo '<li>';
-		echo '<a href="'.$globals['base_url'].'comments_rss2.php?id='.$globals['link_id'].'" rel="rss">'._('comentarios noticia').'</a>';
+		echo '<a href="'.$globals['base_url'].'comments_rss2.php?id='.$globals['link_id'].'" rel="rss">'._('rss comentarios noticia').'</a>';
 		echo '</li>' . "\n";
 	}
 
 	if($current_user->user_id > 0) {
 		echo '<li>';
-		echo '<a href="'.$globals['base_url'].'comments_rss2.php?author_id='.$current_user->user_id.'" rel="rss">'._('comentarios (mis noticias)').'</a>';
+		echo '<a href="'.$globals['base_url'].'comments_rss2.php?author_id='.$current_user->user_id.'" rel="rss">'._('rss comentarios (mis noticias)').'</a>';
 		echo '</li>' . "\n";
 	}
 
 	echo '<li>';
-	echo '<a href="'.$globals['base_url'].'comments_rss2.php" rel="rss">'._('comentarios (todos)').'</a>';
+	echo '<a href="'.$globals['base_url'].'comments_rss2.php" rel="rss">'._('rss comentarios (todos)').'</a>';
 	echo '</li>' . "\n";
 
 	echo '</ul>' . "\n";
+// 	echo '<br style="clear: both;" />' . "\n";
+	echo '</li> <!--html1:do_mnu_rss()-->' . "\n";
+
+}
+
+function do_mnu_trackbacks() {
+	global $db, $globals;
+
+	echo '<li>' . "\n";
+	echo '<ul class="mnu-trackback">' . "\n";
+
+	echo '<li><a href="'.$globals['link']->get_trackback().'" title="'._('URI para trackbacks').'">trackback <img src="'.$globals['base_url'].'img/common/permalink.gif" alt="'._('enlace trackback').'" width="16" height="9"/></a></li>' . "\n";
+
+	echo '<li><ul class="mnu-trackback-list">' . "\n";
+	$id=$globals['link_id'];
+	$trackbacks = $db->get_col("SELECT trackback_id FROM trackbacks WHERE trackback_link_id=$id AND trackback_type='in' ORDER BY trackback_date DESC");	
+	if ($trackbacks) {
+		require_once(mnminclude.'trackback.php');
+		$trackback = new Trackback;
+		foreach($trackbacks as $trackback_id) {
+			$trackback->id=$trackback_id;
+			$trackback->read();
+			echo '<li class="mnu-trackback-entry"><a href="'.$trackback->url.'" title="'.$trackback->content.'">'.$trackback->title.'</a></li>' . "\n";
+		}
+	}
+	else {
+		echo '<li class="mnu-trackback-no">'._('(sin trackbacks)').'</li>' . "\n";
+	}
+// 	echo '<li class="mnu-trackback-entry"><a href="#">prova</a></li>';
+
+	echo '<li class="mnu-trackback-technorati"><a href="http://technorati.com/search/'.urlencode($globals['link']->get_permalink()).'">'._('según Technorati').'</a></li>' . "\n";
+	echo '<li class="mnu-trackback-google"><a href="http://blogsearch.google.com/blogsearch?hl=es&amp;q=link%3A'.urlencode($globals['link']->get_permalink()).'">'._('según Google').'</a></li>' . "\n";
+
+	echo '<li class="mnu-trackback-askcom"><a href="http://es.ask.com/blogsearch?q='.urlencode($globals['link']->get_permalink()).'&amp;t=a&amp;search=Buscar&amp;qsrc=2101&amp;bql=any">'._('según Ask.com').'</a></li>' . "\n";
+
+
+	echo "</ul></li>\n";
+
+	echo "</ul>\n";
+	echo '</li><!--html1:do_mnu_trackbacks-->' . "\n";
+}
+
+function do_mnu_categories($what_cat_type, $what_cat_id) {
+	
+	// $what_cat_type:
+	//	index: from index.php
+	// 	shakeit: from shakeit.php
+
+	global $db, $dblang, $globals;
+
+	// Categories Box
+	echo '<li>' . "\n"; // It was class="side-boxed"
+
+	// change class id for shakeit page
+	if ($what_cat_type == 'shakeit') $categorylist_class = 'column-one-list';
+		else $categorylist_class = 'column-list';
+	echo '<div class="'.$categorylist_class.'">' . "\n";
+	
+	echo '<ul>' . "\n";
+
+	// database slow query
+	/*
+	if ($what_cat_type == 'shakeit') {
+		$queued_count = $db->get_var("SELECT count(*) FROM links WHERE link_status = 'queued'");
+		$categories = $db->get_results("select category_id, category_name,  count(*) as count from links, categories where category_lang='$dblang' and category_id=link_category AND link_status = 'queued' group by link_category ORDER BY category_name ASC");
+	}
+	else {
+		$categories = $db->get_results("SELECT category_id, category_name FROM categories WHERE category_lang='$dblang' ORDER BY category_name ASC");
+	}
+    */
+	$categories = $db->get_results("SELECT category_id, category_name FROM categories WHERE category_lang='$dblang' ORDER BY category_name ASC");
+
+	$query=preg_replace('/category=[0-9]*/', '', $_SERVER['QUERY_STRING']);
+	// Always return to page 1
+	$query=preg_replace('/page=[0-9]*/', '', $query);
+	$query=preg_replace('/^&*(.*)&*$/', "$1", $query);
+	if(!empty($query)) {
+		$query = htmlspecialchars($query);
+		$query = "&amp;$query";
+	}
+
+	// draw first category: all categories
+	if (empty($what_cat_id)) $thiscat = ' class="thiscat"';
+		else $thiscat = '';
+	if (preg_match('/index\.php/', $_SERVER['PHP_SELF'])) $base_url = $globals['base_url'];
+	else $base_url = htmlspecialchars($_SERVER[PHP_SELF]);
+	echo '<li'.$thiscat.'><a href="'.$base_url.'?'.$query.'">'._('_todas');
+	//if ($what_cat_type == 'shakeit') echo '&nbsp;('.$queued_count.')';
+	echo '</a></li>' . "\n";
+
+	// draw categories
+	foreach ($categories as $category) {
+
+		if($category->category_id == $what_cat_id) {
+			$globals['category_id'] = $category->category_id;
+			$globals['category_name'] = $category->category_name;
+			$thiscat = ' class="thiscat"';
+		}
+		else {
+			$thiscat = '';
+		}
+
+
+		echo '<li'.$thiscat.'><a href="'.$base_url.'?category='.$category->category_id.$query.'">';
+		echo _($category->category_name);
+		//if ($what_cat_type == 'shakeit') echo '&nbsp;('.$category->count.')';
+		echo "</a></li>\n";
+
+		}
+
+	echo '</ul>';
 	echo '<br style="clear: both;" />' . "\n";
-	echo '</li> <!--html1:do_rss_box()-->' . "\n";
+	echo '</div></li><!--html1:do_categories-->' . "\n";
 
 }
 

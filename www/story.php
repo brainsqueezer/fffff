@@ -94,10 +94,8 @@ do_header($link->title, 'post');
 
 do_navbar('<a href="'.$globals['base_url'].'?category='.$link->category.'">'. $globals['category_name'] . '</a> &#187; '. $link->title);
 echo '<div id="contents">';
+do_tabs("main","story");
 $link->print_summary();
-
-echo '<div class="air-with-footer">'."\n";
-
 
 switch ($tab_option) {
 case 1:
@@ -142,7 +140,7 @@ case 2:
 		echo '</div>'."\n";
 	}
 
-	echo '</div><br clear="all" />' . "\n";
+	echo '</div>' . "\n";
 	break;
 
 case 3:
@@ -212,7 +210,6 @@ case 5:
 
 }
 
-echo '</div>'."\n"; // <div class="air-with-footer">
 echo '</div>';
 
 echo '<!--'."\n".'<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"'."\n";
@@ -236,7 +233,7 @@ function print_comment_form() {
 	echo '<form action="" method="post" id="thisform" style="display:inline;">'."\n";
 	echo '<fieldset><legend><span class="sign">'._('envía un comentario').'</span></legend>'."\n";
 	//echo '<p>'."\n";
-	echo _('Insultos, difamaciones y frases racistas podrían causar la anulación de la cuenta.');
+	echo _('insultos, difamaciones y frases racistas podrían causar la anulación de la cuenta.');
 	echo '<label for="comment" accesskey="2" style="float:left">'._('texto del comentario / no se admiten etiquetas HTML').'</label>'."\n";
 	//echo '</p>';
 	echo '<div style="float: right;">';
@@ -253,6 +250,7 @@ function print_comment_form() {
 	echo '</fieldset>'."\n";
 	echo '</form>'."\n";
 	echo "</div>\n";
+
 }
 
 function insert_comment () {
@@ -297,12 +295,9 @@ function print_story_tabs($option) {
 	global $globals;
 
 	$active = array();
-	// Print tabs
-	echo '<div class="sub-nav" style="font-weight: bold;">'."\n";
-	echo '<ul>'."\n";
+	$active[$option] = 'class="tabsub-this"';
 
-	$active[$option] = 'class="active"';
-
+	echo '<ul class="tabsub-story">'."\n";
 	echo '<li '.$active[1].'><a href="'.$globals['link_permalink'].'">'._('comentarios'). '</a></li>'."\n";
 	echo '<li '.$active[2].'><a href="'.$globals['link_permalink'].'/best-comments">'._('+ valorados'). '</a></li>'."\n";
 	echo '<li '.$active[3].'><a href="'.$globals['link_permalink'].'/voters">'._('quiénes votaron'). '</a></li>'."\n";
@@ -310,7 +305,7 @@ function print_story_tabs($option) {
 		echo '<li '.$active[5].'><a href="'.$globals['link_permalink'].'/sneak">&micro;&nbsp;'._('fisgona'). '</a></li>'."\n";
 		echo '<li '.$active[4].'><a href="'.$globals['link_permalink'].'/log">'._('log'). '</a></li>'."\n";
 	}
-	echo '</ul><br /></div>'."\n";
+	echo '</ul>'."\n";
 }
 
 ?>

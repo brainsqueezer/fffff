@@ -89,20 +89,19 @@ function do_legal($legal_name, $target = '') {
 function do_credits() {
 	global $dblang, $globals;
 
-	echo '<br style="clear: both;" />' . "\n";
+	echo '<div id="footer-floater">&nbsp;</div>'."\n";
+	echo "</div><!--#container closed-->\n";
+
+// 	echo '<br style="clear: both;" />' . "\n";
 	echo '<div class="credits-strip">' . "\n";
 	echo '<span class="credits-strip-text">' . "\n";
 
-	echo '<strong>';
-	do_legal (_('información legal y condiciones de uso'));
-	echo '</strong>&nbsp;&nbsp;|&nbsp;&nbsp;';
+        echo '<strong>';
+        do_legal (_('información legal y condiciones de uso'));
+        echo '</strong>&nbsp;&nbsp;|&nbsp;&nbsp;';
 
 	echo '<a href="'.$globals['base_url'].'faq-'.$dblang.'.php#we">'._('quiénes somos').'</a>';
-	echo '&nbsp;&nbsp;|&nbsp;&nbsp;';
-	echo '<a href="http://blog.meneame.net">'._('blog oficial').'</a>';
-	echo '<br />';
-	echo '<a href="http://meneame.wikispaces.com/" title="wiki meneame">'._('wiki').'</a>' . "\n";
-	echo '&nbsp;&nbsp;|&nbsp;&nbsp;'._('código: ').' <a href="'.$globals['base_url'].'COPYING">'._('licencia').'</a>, <a href="'.$globals['base_url'].'archives/meneame-src.tgz">'._('descargar').'</a>';
+	echo '&nbsp;&nbsp;|&nbsp;&nbsp;'._('código: ').'<a href="'.$globals['base_url'].'COPYING">'._('licencia').'</a>, <a href="'.$globals['base_url'].'archives/meneame-src.tgz">'._('descargar').'</a>';
 	echo '&nbsp;&nbsp;|&nbsp;&nbsp;<a href="http://creativecommons.org/licenses/by-sa/2.5/">'._('licencia de los gráficos').'</a>' . "\n";
 	echo '</span>' . "\n";
 	echo '<span class="credits-strip-buttons">' . "\n";

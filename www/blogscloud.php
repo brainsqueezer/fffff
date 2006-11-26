@@ -38,12 +38,12 @@ $max = max($db->get_var("select count(*) as count $from_where order by count des
 $coef = ($max_pts - $min_pts)/($max-1);
 
 
-do_header(_('nube de blogs'));
-do_navbar(_('blogs'));
+do_header(_('nube de lugares web'));
+do_navbar(_('sites'));
 echo '<div id="contents">';
-echo '<h2>Los + blogs</h2>';
-
-echo '<div style="margin: 20px 0 20px 0; line-height: '.$line_height.'pt; margin-left: 100px;">';
+do_tabs("main","");
+echo '<div class="topheading"><h2>Los +</h2></div>';
+echo '<div style="margin: 20px 0 20px 0; line-height: '.$line_height.'pt; margin-left: 50px;">';
 $res = $db->get_results("select blog_url, count(*) as count $from_where order by count desc limit $limit");
 if ($res) {
 	foreach ($res as $item) {
@@ -69,9 +69,12 @@ function do_sidebar_top() {
 	global $db, $dblang, $range_values, $range_names;
 
 	echo '<div id="sidebar">'."\n";
-	echo '<ul class="main-menu">'."\n";
+	echo '<ul class="mnu-main">'."\n";
+	do_mnu_faq('sitescloud');
+	do_mnu_submit();
+	do_mnu_sneak();
 	echo '<li>'."\n";
-	echo '<div class="column-select-us">'."\n";
+	echo '<div class="column-one-list-short">'."\n";
 	echo '<ul>'."\n";
 
 	if(!($current_range = check_integer('range')) || $current_range < 1 || $current_range >= count($range_values)) $current_range = 0;
@@ -87,7 +90,7 @@ function do_sidebar_top() {
 	echo '</div>'."\n";
 	echo '</li>'."\n";
 
-	do_standard_links();
+	do_mnu_meneria();
 	echo '</ul>';
 	echo '</div>';
 

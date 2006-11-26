@@ -86,7 +86,7 @@ function show_profile() {
 		echo '<span class="sign">'."<a href='".get_user_uri($user->username)."'>$user->username</a>: $user->level</span></legend>";
 
 
-	echo '<img class="sub-nav-img" src="'.$globals['base_url'] . 'backend/get_avatar.php?id='.$user->id.'&amp;size=80&amp;t='.time().'" width="80" height="80" alt="'.$user->username.'" />';
+	echo '<img class="gravatar-sub" src="'.$globals['base_url'] . 'backend/get_avatar.php?id='.$user->id.'&amp;size=80&amp;t='.time().'" width="80" height="80" alt="'.$user->username.'" />';
 	echo '<form  enctype="multipart/form-data" action="profile.php" method="post" id="thisform" AUTOCOMPLETE="off">';
 	echo '<input type="hidden" name="process" value="1" />';
 	echo '<input type="hidden" name="user_id" value="'.$user->id.'" />';

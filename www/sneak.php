@@ -207,8 +207,6 @@ function put_smiley(str) {
 
 do_navbar(_('fisgona'));
 
-//echo '<div class="air-with-footer">';
-
 echo '<div class="sneaker">';
 echo '<div class="sneaker-legend" onmouseout="tooltip.clear(event);" onmouseover="tooltip.clear(event);">';
 echo '<form action="" class="sneaker-control" id="sneaker-control" name="sneaker-control">';
@@ -254,6 +252,6 @@ for ($i=0; $i<$max_items;$i++) {
 }
 
 echo '</div>';
-//echo "</div>\n"; // air-with-footer
+
 do_footer(false);
 ?>

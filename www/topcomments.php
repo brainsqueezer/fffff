@@ -16,7 +16,9 @@ $globals['ads'] = true;
 do_header(_('mejores comentarios en 24 horas'));
 do_navbar(_('comentarios más valorados') . ' &#187; ' . _('estadísticas'));
 echo '<div id="contents">';
-echo '<h2>'._('comentarios más valorados 24 horas').'</h2>';
+do_tabs("main","");
+echo '<div class="topheading"><h2>'._('comentarios más valorados 24 horas').'</h2></div>';
+
 
 $last_link = 0;
 $counter = 0;
@@ -24,7 +26,7 @@ $comment = new Comment;
 $link = new Link;
 
 echo '<div class="comments">';
-echo '<div class="air-with-footer">'."\n";
+
 $comments = $db->get_results("SELECT comment_id, link_id FROM comments, links WHERE comment_date > date_sub(now(), interval 24 hour) and link_id=comment_link_id ORDER BY comment_karma desc, link_id asc limit 25");
 if ($comments) {
 	foreach ($comments as $dbcomment) {
@@ -49,11 +51,10 @@ if ($comments) {
 		echo "</ol>\n";
 	}
 }
+
 echo '</div>';
 echo '</div>';
 
-
-echo '</div>';
 do_sidebar_top();
 do_footer();
 
@@ -62,8 +63,12 @@ function do_sidebar_top() {
 	global $db, $dblang, $range_values, $range_names;
 
 	echo '<div id="sidebar">'."\n";
-	echo '<ul class="main-menu">'."\n";
-	do_standard_links();
+	echo '<ul class="mnu-main">'."\n";
+	do_mnu_faq('topcomments');
+	do_mnu_submit();
+	do_mnu_sneak();
+	do_mnu_meneria();
+
 	echo '</ul>';
 	echo '</div>';
 
